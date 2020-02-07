@@ -1,6 +1,7 @@
 let lastScroll = 0;
 let currentSection = 0;
 let ticking = false;
+const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
 const sections = document.getElementsByClassName('section');
 console.log("TCL: sections", sections);
@@ -13,27 +14,20 @@ window.onload = function get_body() {
 const scrollSectionIntoView = () => {
   if (lastScroll < window.pageYOffset && currentSection < sections.length-1) {
     currentSection++;
-    sections[currentSection].scrollIntoView();
   }
   else if (lastScroll > window.pageYOffset && currentSection > 0) {
     currentSection--;
-    sections[currentSection].scrollIntoView();
   }
-  console.log('CurrentSection', currentSection);
+  sections[currentSection].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
   lastScroll = window.pageYOffset;
 }
 
-// window.addEventListener('scroll', () => {
-//     if (lastScroll < window.pageYOffset) {
-//       window.scrollBy(0, window.innerHeight);
-//     }
-//     else if (lastScroll > window.pageYOffset) {
-//       window.scrollBy(0, window.innerHeight * -1);
-//     }
-//     lastScroll = window.pageYOffset;
-//     console.log("TCL: window.pageYOffset", window.pageYOffset)
-// });
-
 window.addEventListener('scroll', () => {
-  scrollSectionIntoView();
+  if(!ticking) {
+    ticking = true;
+    setTimeout(() => {
+      ticking = false
+    },500);
+    scrollSectionIntoView();
+  }
 });
